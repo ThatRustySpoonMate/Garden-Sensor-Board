@@ -20,3 +20,9 @@ void setup_wifi(const char *ssid, const char *password) {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 }
+
+void wifi_disconnect() {
+  WiFi.disconnect();
+
+  return;
+}
