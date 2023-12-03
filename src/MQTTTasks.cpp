@@ -28,6 +28,7 @@ void mqtt_transmit(const char *topic, const char *payload) {
     return;
 }
 
+
 void mqtt_keep_alive() {
   if (!client.connected()) {
     mqtt_reconnect();
