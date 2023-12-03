@@ -9,23 +9,24 @@ const char *DEVICE_NAME;
 const char *RX_TOPIC;
 
 void setup_mqtt(const char *MQTT_BROKER_IP, const int MQTT_BROKER_PORT, const char *DEV_NAME, const char *MANAGEMENT_TOPIC) {
-    BROKER_IP = MQTT_BROKER_IP;
-    BROKER_PORT = MQTT_BROKER_PORT;
-    DEVICE_NAME = DEV_NAME;
-    RX_TOPIC = MANAGEMENT_TOPIC;
+  BROKER_IP = MQTT_BROKER_IP;
+  BROKER_PORT = MQTT_BROKER_PORT;
+  DEVICE_NAME = DEV_NAME;
+  RX_TOPIC = MANAGEMENT_TOPIC;
 
-    client.setServer(BROKER_IP, BROKER_PORT);
+  client.setServer(BROKER_IP, BROKER_PORT);
 
-    client.setCallback(message_rx_callback);
+  client.setCallback(message_rx_callback);
 
-    return;
+  return;
 }
 
 
 void mqtt_transmit(const char *topic, const char *payload) {
-    client.publish(topic, payload);
+  mqtt_keep_alive();
+  client.publish(topic, payload);
 
-    return;
+  return;
 }
 
 
@@ -64,10 +65,10 @@ void mqtt_reconnect() {
 void message_rx_callback(char* topic, byte* message, unsigned int length) {
   String messageTemp;
 
-    Serial.print("Message arrived on topic: ");
-    Serial.print(topic);
-    Serial.print(". Message: ");
-  
+  Serial.print("Message arrived on topic: ");
+  Serial.print(topic);
+  Serial.print(". Message: ");
+
   
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);

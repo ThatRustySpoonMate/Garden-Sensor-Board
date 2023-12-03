@@ -24,7 +24,6 @@ void loop() {
 void upon_wake() {
   static uint16_t moistureReadingRaw;
   static String moistureReadingStr;
-
   
   // Connect to WIFI
   setup_wifi(WIFI_SSID, WIFI_PASSWORD);
@@ -36,7 +35,7 @@ void upon_wake() {
   digitalWrite(SOIL_MOISUTRE_SENS_GND, LOW);
 
   // Take Reading
-  delay(100); // Allow time for startup of soil moisture sensor
+  delay(500); // Allow time for startup of soil moisture sensor
   moistureReadingRaw = analogRead(SOIL_MOISTURE_SENS_DIN);
 
   // Power down soil sensor
@@ -46,8 +45,11 @@ void upon_wake() {
   moistureReadingStr = String(moistureReadingRaw);
   mqtt_transmit(MQTT_TOPIC_MOISTURE, moistureReadingStr.c_str());
 
+
   // Disconnect WIFI & MQTT
+  delay(500); // Allow time to transmit message before disconnecting
   mqtt_disconnect();
+  //wifi_disconnect();
 }
 
 
