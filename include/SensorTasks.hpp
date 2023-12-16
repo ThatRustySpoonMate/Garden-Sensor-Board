@@ -1,8 +1,13 @@
 #include "Arduino.h"
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 
-#define SOIL_MOISUTRE_SENS_GND 15
+#define SOIL_MOISUTRE_SENS_VCC 15
 #define SOIL_MOISTURE_SENS_DIN 33 // 5 - ADC1_CH4 for ESP32 Dev Board
+
+#define SEALEVELPRESSURE_HPA (1013.25)
 
 void initSensors();
 
-void readSensors(uint16_t *moistureReading);
+void readSensors(uint16_t *moistureReading, float *temp, float *humidity, float *baroPres, float *altitude);

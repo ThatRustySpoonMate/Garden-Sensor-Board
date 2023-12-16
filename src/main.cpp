@@ -23,7 +23,8 @@ void loop() {
 
 void upon_wake() {
   static uint16_t moistureReadingRaw;
-  static String moistureReadingStr;
+  static float tempReadingRaw, humidityReadingRaw, pressureReadingRaw, altitudeReadingRaw;
+  static String moistureReadingStr, tempReadingStr, humidityReadingStr, pressureReadingStr, altitudeReadingStr;
   
   // Connect to WIFI
   setup_wifi(WIFI_SSID, WIFI_PASSWORD);
@@ -31,12 +32,24 @@ void upon_wake() {
   // Connect to MQTT
   mqtt_reconnect();
 
-  readSensors(&moistureReadingRaw);
+  // Read soil moisture and BME280 sensors
+  readSensors(&moistureReadingRaw, &tempReadingRaw, &humidityReadingRaw, &pressureReadingRaw, &altitudeReadingRaw);
 
-  // Transmit reading to MQTT Broker
+  /* Convert readings to string objects */
   moistureReadingStr = String(moistureReadingRaw);
+  tempReadingStr = String(tempReadingRaw);
+  humidityReadingStr = String(humidityReadingRaw);
+  pressureReadingStr = String(pressureReadingRaw);
+  altitudeReadingStr = String(altitudeReadingRaw);
+
+  /* Transmit Soil moisture reading to MQTT Broker */
   mqtt_transmit(MQTT_TOPIC_MOISTURE, moistureReadingStr.c_str());
 
+  /* Transmit BME280 Readings to MQTT Broker */
+  mqtt_transmit(MQTT_TOPIC_TEMPERATURE, tempReadingStr.c_str()); 
+  mqtt_transmit(MQTT_TOPIC_HUMIDITY, humidityReadingStr.c_str()); 
+  mqtt_transmit(MQTT_TOPIC_PRESSURE, pressureReadingStr.c_str()); 
+  mqtt_transmit(MQTT_TOPIC_ALTITUDE, altitudeReadingStr.c_str()); 
 
   // Disconnect WIFI & MQTT
   delay(500); // Allow time to transmit message before disconnecting
