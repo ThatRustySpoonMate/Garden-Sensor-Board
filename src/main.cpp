@@ -9,7 +9,7 @@ void setup() {
 
   Serial.begin(115200);
 
-  pinMode(SOIL_MOISUTRE_SENS_GND, PULLUP);
+  initSensors();
 
   setup_mqtt(MQTT_BROKER_IP, MQTT_BROKER_PORT, DEVICE_ID, MQTT_MANAGEMENT_TOPIC);
 
@@ -31,15 +31,7 @@ void upon_wake() {
   // Connect to MQTT
   mqtt_reconnect();
 
-  // Power up Soil sensor
-  digitalWrite(SOIL_MOISUTRE_SENS_GND, LOW);
-
-  // Take Reading
-  delay(500); // Allow time for startup of soil moisture sensor
-  moistureReadingRaw = analogRead(SOIL_MOISTURE_SENS_DIN);
-
-  // Power down soil sensor
-  digitalWrite(SOIL_MOISUTRE_SENS_GND, HIGH);
+  readSensors(&moistureReadingRaw);
 
   // Transmit reading to MQTT Broker
   moistureReadingStr = String(moistureReadingRaw);
