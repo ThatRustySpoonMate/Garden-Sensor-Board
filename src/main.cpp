@@ -1,7 +1,7 @@
 #include "main.hpp"
 
 #define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP  300      /* Time ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP  300      /* Time ESP32 will sleep for (in seconds) */
 
 void setup() {
 
@@ -9,9 +9,13 @@ void setup() {
 
   Serial.begin(115200);
 
+  Serial.println("Running");
+
   initSensors();
 
   setup_mqtt(MQTT_BROKER_IP, MQTT_BROKER_PORT, DEVICE_ID, MQTT_MANAGEMENT_TOPIC);
+
+  pinMode(LED_BUILTIN, OUTPUT);
 
 }
 
@@ -25,7 +29,9 @@ void upon_wake() {
   static uint16_t moistureReadingRaw;
   static float tempReadingRaw, humidityReadingRaw, pressureReadingRaw, altitudeReadingRaw;
   static String moistureReadingStr, tempReadingStr, humidityReadingStr, pressureReadingStr, altitudeReadingStr;
-  
+  // LED On
+  digitalWrite(LED_BUILTIN, HIGH);
+
   // Connect to WIFI
   setup_wifi(WIFI_SSID, WIFI_PASSWORD);
 
@@ -37,7 +43,7 @@ void upon_wake() {
 
   /* Convert readings to string objects */
   moistureReadingStr = String(moistureReadingRaw);
-  tempReadingStr = String(tempReadingRaw);
+  tempReadingStr     = String(tempReadingRaw);
   humidityReadingStr = String(humidityReadingRaw);
   pressureReadingStr = String(pressureReadingRaw);
   altitudeReadingStr = String(altitudeReadingRaw);
@@ -55,6 +61,10 @@ void upon_wake() {
   delay(500); // Allow time to transmit message before disconnecting
   mqtt_disconnect();
   //wifi_disconnect();
+
+  digitalWrite(LED_BUILTIN, LOW);
+
+  return;
 }
 
 

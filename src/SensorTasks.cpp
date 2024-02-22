@@ -15,6 +15,8 @@ void initSensors() {
         Serial.print("SensorID was: 0x"); Serial.println(bme.sensorID(),16);
     }
 
+    //bme.init();
+
 
     return;
 }
@@ -23,19 +25,20 @@ void readSensors(uint16_t *moistureReading, float *temp, float *humidity, float 
   // Power up Soil sensor
   digitalWrite(SOIL_MOISUTRE_SENS_VCC, HIGH);
 
-  // Take Reading
-  delay(500); // Allow time for startup of soil moisture sensor
-  *moistureReading = analogRead(SOIL_MOISTURE_SENS_DIN);
-
-  // Power down soil sensor
-  digitalWrite(SOIL_MOISUTRE_SENS_VCC, LOW);
-
   /* Read values from BME280 */
   *temp = bme.readTemperature();
   *humidity = bme.readHumidity();
   *baroPres = bme.readPressure();
   *altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
 
+  // Allow time for startup of soil moisture sensor
+  delay(500); 
+  // Take Reading from Soil moisture sensor
+  *moistureReading = analogRead(SOIL_MOISTURE_SENS_DIN);
+
+    // Power down soil sensor
+  digitalWrite(SOIL_MOISUTRE_SENS_VCC, LOW);
+  
 
   return;
 }
